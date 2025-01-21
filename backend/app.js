@@ -13,7 +13,7 @@ const PORT = 5000;
 connectDB();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5174' }));
+app.use(cors({ origin: 'http://localhost:5174/' }));
 app.use(bodyParser.json());
 
 // Routes

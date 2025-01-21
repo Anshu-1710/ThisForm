@@ -1,124 +1,117 @@
-//This is the component for the form where users will input their details.
+// src/components/Form.jsx
 
-import React , {useState} from 'react';
+import React, { useState } from 'react';
 import axios from '../services/api';
 
-const Form = ({onsubmitSuccess})  =>{
-    const [formData , setFormData] = useState({
-        firstName : '',
-        lastName:'',
-        gender:'',
-        dob:'',
-        mobile:'',
-        address:'',
-        country :'',
-        pincode:'',
-        education:{
-            tenthMarks:'',
-            twelfthMarks:'',
-            collegeMarks:'',
-            schoolName:'',
+const Form = ({ onsubmitSuccess }) => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    gender: '',
+    dob: '',
+    mobile: '',
+    address: '',
+    country: '',
+    pincode: '',
+    education: {
+      tenthMarks: '',
+      twelfthMarks: '',
+      collegeMarks: '',
+      schoolName: '',
+    },
+  });
+
+  const countries = ['USA', 'India', 'Canada', 'UK'];
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name.startsWith('education.')) {
+      const field = name.split('.')[1];
+      setFormData((prev) => ({
+        ...prev,
+        education: { ...prev.education, [field]: value },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/personalDetails', formData);
+      alert('Form submitted successfully!');
+      setFormData({
+        firstName: '',
+        lastName: '',
+        gender: '',
+        dob: '',
+        mobile: '',
+        address: '',
+        country: '',
+        pincode: '',
+        education: {
+          tenthMarks: '',
+          twelfthMarks: '',
+          collegeMarks: '',
+          schoolName: '',
         },
+      });
+      onsubmitSuccess();
+    } catch (err) {
+      console.log('Error submitting form:', err);
+    }
+  };
 
-
-    });
-
-    const countries = ['USA' , 'India','Canada', 'UK'];
-
-    const handleChange = (e) =>{
-        const {name , value } = e.target;
-
-        if (name.startsWith('education.')) {
-            const field = name.split('.')[1];
-            setFormData((prev) => ({
-              ...prev,
-              education: { ...prev.education, [field]: value },
-            }));
-          } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
-          }
-    };
-
-    const handleSubmit = async (e) =>{
-        e.preventDefault();
-        try{
-            await axios.post('/personalDetails' , formData);
-            alert('form submited sucessfully !');
-
-            setFormData({
-                firstName: '',
-                lastName: '',
-                gender: '',
-                dob: '',
-                mobile: '',
-                address: '',
-                country: '',
-                pincode: '',
-                education: {
-                  tenthMarks: '',
-                  twelfthMarks: '',
-                  collegeMarks: '',
-                  schoolName: '',
-                },
-            })
-            onsubmitSuccess();
-        } catch(err) {
-            console.log("Error submitting form :" , err);
-        }
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>First Name :</label>
-                <input 
-                    type ="text"
-                    name="firstName"
-                    value = {formData.firstName}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-            <label>Last Name:</label>
-            <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>First Name:</label>
+        <input
+          type="text"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div>
+        <label>Last Name:</label>
+        <input
+          type="text"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div>
+        <label>Gender:</label>
+        <label>
+          <input
+            type="radio"
+            name="gender"
+            value="Male"
+            checked={formData.gender === 'Male'}
             onChange={handleChange}
             required
-            />
-        </div>
-        <div>
-            <label>Gender: </label>
-            <label>
-                <input 
-                    type='radio'
-                    name='gender'
-                    value = 'Male'
-                    checked = {formData.gender == 'Male'}
-                    onChange={handleChange}
-                    required
-
-                />
-                Male
-            </label>
-
-            <label>
-                    <input 
-                             type="radio"
-                             name="gender"
-                             value="Female"
-                             checked={formData.gender === 'Female'}
-                             onChange={handleChange}
-                             required
-                    
-                    ></input>
-                    Female
-                </label>
-        </div>
-
-        <div>
+          />
+          Male
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="gender"
+            value="Female"
+            checked={formData.gender === 'Female'}
+            onChange={handleChange}
+            required
+          />
+          Female
+        </label>
+      </div>
+      <div>
         <label>Date of Birth:</label>
         <input
           type="date"
@@ -128,7 +121,6 @@ const Form = ({onsubmitSuccess})  =>{
           required
         />
       </div>
-
       <div>
         <label>Mobile:</label>
         <input
@@ -139,32 +131,27 @@ const Form = ({onsubmitSuccess})  =>{
           required
         />
       </div>
-      <div style={{display:'flex'}}>
-        <label style={{paddingRight:10 , paddingTop:40}}>Address:</label>
-        <div style={{ padding:25}}>
+      <div>
+        <label>Address:</label>
         <textarea
           name="address"
           value={formData.address}
           onChange={handleChange}
           required
-
-        
         />
-        </div>
-        
       </div>
       <div>
-        <label>Country :</label>
+        <label>Country:</label>
         <select name="country" value={formData.country} onChange={handleChange} required>
-        <option value="">Select Country</option>
+          <option value="">Select Country</option>
           {countries.map((country, idx) => (
             <option key={idx} value={country}>
               {country}
             </option>
           ))}
         </select>
-        </div>
-        <div>
+      </div>
+      <div>
         <label>Pincode:</label>
         <input
           type="text"
@@ -214,10 +201,9 @@ const Form = ({onsubmitSuccess})  =>{
           required
         />
       </div>
-      
       <button type="submit">Submit</button>
     </form>
-    )
+  );
 };
 
 export default Form;

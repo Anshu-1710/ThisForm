@@ -1,25 +1,28 @@
-//This is the main application file that combines the Form and Table components.
-import React from 'react';
-import Form from './components/Form.jsx';
-import Table from './components/tables.jsx';
-import './styles/styles.css'
+import React, { useState } from "react";
+import Form from "./components/Form";
+import Table from "./components/tables"
 
-const App = () =>{
-  const [refresh , setRefersh] = React.useState(false);
+const App = () => {
+  const [isDataVisible, setIsDataVisible] = useState(false);
 
-  const handleRefresh = () =>{
-    setRefersh((prev) => (!prev));
+  const handleViewData = () => {
+    setIsDataVisible(true);
   };
 
   return (
     <div>
-      <h1>Personal Details Form</h1>
-      <Form onsubmitSuccess={handleRefresh} />
-      <h2>Stored Details</h2>
-      <Table key={refresh} />
+      <h1>Personal and Education Details</h1>
+      
+      {/* Form Component for submitting data */}
+      <Form onsubmitSuccess={handleViewData} />
+      
+      {/* Button to view the stored data in a table */}
+      <button onClick={handleViewData}>View Data</button>
+      
+      {/* Display the Table only when isDataVisible is true */}
+      {isDataVisible && <Table />}
     </div>
-
-  )
-}
+  );
+};
 
 export default App;
